@@ -1,0 +1,7 @@
+*~
+*.o
+*.bak
+*.bin
+bochsout.txt
+hd.img.info
+*.iso

@@ -1,0 +1,17 @@
+PulseOS v0.1 
+
+A friendly neighbourhood operating system with a 32 bit kernel. PulseOS is a hobby project heavily based 
+upon the Bran's kernel development tutorial. Aims are to make PulseOS a fully functional Server operating
+system. Further support to new and cutting edge research file-systems are planned to be implemented.
+
+To Compile:
+	To compile PulseOS you need to set up your own cross-compiler (preferably gcc for the i586-elf platform) 
+	
+	$ make
+
+To run: 
+	You must have Qemu installed
+
+	$ ./runos
+
+
