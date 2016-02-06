@@ -17,14 +17,14 @@ TIMER=$(TOPDIR)/timer
 CRT=$(SYSTEM)/crt
 MEM=$(TOPDIR)/memory
 #Compiler and Assembler
-CC=i586-elf-gcc
+CC=gcc
 AS=nasm
-GAS=i586-elf-as
-CPP=i586-elf-g++
+GAS=as
+CPP=g++
 
 INCLUDES= -I$(DISPLAY) -I$(IO) -I$(SYSTEM) -I$(BOOT) -I$(KERNEL) -I$(GDT) -I$(IDT) -I$(ISR) -I$(IRQ) -I$(KEYBOARD) -I$(UTILITY) -I$(TIMER) -I$(MEM)
 LINKERLD=-T $(TOPDIR)/linker/linker.ld
-FLAGS= -ffreestanding -O2 -std=gnu99 -Wall -Wextra -nostdlib -fno-exceptions
+FLAGS= -m32 -ffreestanding -O2 -std=gnu99 -Wall -Wextra -nostdlib -fno-exceptions
 CPFLAGS= -ffreestanding -O2 -Wall -Wextra -nostdlib -fno-exceptions -fno-rtti
 LIBS=-lgcc
 CRTI_OBJ=$(BIN)/crti.o
@@ -33,7 +33,7 @@ CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ=$(BIN)/crtn.o
 OBJF=$(BIN)/kernel.o $(BIN)/boot.o $(BIN)/io.o $(BIN)/textmode.o $(BIN)/vgamodes.o $(BIN)/gdtflush.o $(BIN)/idtload.o $(BIN)/idt.o $(BIN)/isrhand.o $(BIN)/isr.o $(BIN)/utility.o $(BIN)/irqcode.o $(BIN)/irq.o $(BIN)/gdt.o $(BIN)/welcome.o $(BIN)/keyboard.o $(BIN)/memmgr.o $(BIN)/pagefault.o
 OBJ=crti.o boot.o io.o textmode.o vgamodes.o gdtflush.o idtload.o idt.o isrhand.o isr.o utility.o irqcode.o irq.o kernel.o gdt.o welcome.o keyboard.o crtn.o memmgr.o pagefault.o
-OBJECTFILES:=$(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJF) $(CRTEND_OBJ) $(CRTN_OBJ)
+OBJECTFILES:= $(OBJF)
 
 
 
@@ -41,10 +41,11 @@ all: myos.iso
 
 myos.iso: myos.bin
 	cp $(BIN)/myos.bin $(ISO)/boot/
-	grub2-mkrescue -o myos.iso $(ISO)
+	grub-mkrescue -o myos.iso $(ISO)
 
 myos.bin: $(OBJ)
-	$(CC) $(INCLUDES) $(LINKERLD) -o $(BIN)/myos.bin $(FLAGS) $(OBJECTFILES) 
+	$(LD) -m elf_i386 $(LINKERLD) -o $(BIN)/myos.bin $(OBJECTFILES)
+#	$(CC) $(INCLUDES) $(LINKERLD) -o $(BIN)/myos.bin $(FLAGS) $(OBJECTFILES) 
 
 boot.o: $(BOOT)/boot.asm
 	$(AS) -felf $(BOOT)/boot.asm -o $(BIN)/boot.o
@@ -101,10 +102,10 @@ keyboard.o: $(KEYBOARD)/keyboard.c
 	$(CC) $(INCLUDES) -c $(KEYBOARD)/keyboard.c -o $(BIN)/keyboard.o $(FLAGS)
 
 crti.o: $(CRT)/crti.s
-	$(GAS) $(CRT)/crti.s -o $(BIN)/crti.o
+	$(GAS) --32 $(CRT)/crti.s -o $(BIN)/crti.o
 
 crtn.o: $(CRT)/crtn.s
-	$(GAS) $(CRT)/crtn.s -o $(BIN)/crtn.o
+	$(GAS) --32 $(CRT)/crtn.s -o $(BIN)/crtn.o
 
 .PHONY: clean
 clean:
