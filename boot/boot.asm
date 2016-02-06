@@ -21,12 +21,12 @@ _start:
 	mov esp, stack_top
 	push ebx
 	push eax
-	extern _init
-	call _init
+	;extern _init
+	;call _init
 	extern kernel_main
 	call kernel_main
-	extern _fini
-	call _fini
+	;extern _fini
+	;call _fini
 .hang:
 	hlt
 	jmp .hang
