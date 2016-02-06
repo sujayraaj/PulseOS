@@ -5,3 +5,4 @@
 bochsout.txt
 hd.img.info
 *.iso
+./bin/*
