@@ -29,33 +29,33 @@ terminal_initialize();
 welcome();
 col = color(COLOR_BLACK,COLOR_LIGHT_BLUE);
 terminal_color=col;
+terminal_writestring("\nPress Enter to begin memory mapping ..");
+wait_for_key('\n');
 terminal_writestring("\nPlease wait while the memory of the system is being mapped ..");
 terminal_putchar('\n');
 while(mmap < mbt->mmap_addr + mbt->mmap_length) {
 	count++;
 	terminal_writestring("\nBlock: ");
 	terminal_putint(count);
-	terminal_writestring("\nSize ");
+	terminal_writestring(" Size ");
 	terminal_putint(mmap->size);
+	terminal_writestring(" Type ");
+	terminal_putint(mmap->type);
+
 	terminal_writestring("\nAddress (High/Low) ");
 	terminal_putint(mmap->base_addr_high);
 	terminal_putchar(' ');
 	terminal_putint(mmap->base_addr_low);
-	terminal_writestring("\nLength (High/Low) ");
+	terminal_writestring(" Length (High/Low) ");
 	terminal_putint(mmap->length_high);
 	terminal_putchar(' ');
 	terminal_putint(mmap->length_low);
-	terminal_writestring("\nType ");
-	terminal_putint(mmap->type);
 	terminal_putchar('\n');
 	if(mmap->type==1){
 	 a[it]= (unsigned int) mmap;
 	it++;
 	}
 	mmap = (memory_map_t*) ( (unsigned int)mmap + mmap->size + sizeof(unsigned int) );
-	wait_for_key('a');
-
 	}
 terminal_writestring("DONE");
-wait_for_key('x');
 }

@@ -17,14 +17,16 @@ TIMER=$(TOPDIR)/timer
 CRT=$(SYSTEM)/crt
 MEM=$(TOPDIR)/memory
 #Compiler and Assembler
-CC=gcc
+COMPILERPREFIX=i386-rtems4.12
+CC=$(COMPILERPREFIX)-gcc
 AS=nasm
-GAS=as
-CPP=g++
+GAS=$(COMPILERPREFIX)-as
+CPP=$(COMPILERPREFIX)-g++
+LD=$(COMPILERPREFIX)-ld
 
 INCLUDES= -I$(DISPLAY) -I$(IO) -I$(SYSTEM) -I$(BOOT) -I$(KERNEL) -I$(GDT) -I$(IDT) -I$(ISR) -I$(IRQ) -I$(KEYBOARD) -I$(UTILITY) -I$(TIMER) -I$(MEM)
 LINKERLD=-T $(TOPDIR)/linker/linker.ld
-FLAGS= -m32 -ffreestanding -O2 -std=gnu99 -Wall -Wextra -nostdlib -fno-exceptions
+FLAGS= -ffreestanding -O2 -std=gnu99 -Wall -Wextra -nostdlib -fno-exceptions
 CPFLAGS= -ffreestanding -O2 -Wall -Wextra -nostdlib -fno-exceptions -fno-rtti
 LIBS=-lgcc
 CRTI_OBJ=$(BIN)/crti.o
@@ -32,7 +34,7 @@ CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ=$(BIN)/crtn.o
 OBJF=$(BIN)/kernel.o $(BIN)/boot.o $(BIN)/io.o $(BIN)/textmode.o $(BIN)/vgamodes.o $(BIN)/gdtflush.o $(BIN)/idtload.o $(BIN)/idt.o $(BIN)/isrhand.o $(BIN)/isr.o $(BIN)/utility.o $(BIN)/irqcode.o $(BIN)/irq.o $(BIN)/gdt.o $(BIN)/welcome.o $(BIN)/keyboard.o $(BIN)/memmgr.o $(BIN)/pagefault.o
-OBJ=crti.o boot.o io.o textmode.o vgamodes.o gdtflush.o idtload.o idt.o isrhand.o isr.o utility.o irqcode.o irq.o kernel.o gdt.o welcome.o keyboard.o crtn.o memmgr.o pagefault.o
+OBJ=boot.o io.o textmode.o vgamodes.o gdtflush.o idtload.o idt.o isrhand.o isr.o utility.o irqcode.o irq.o kernel.o gdt.o welcome.o keyboard.o memmgr.o pagefault.o
 OBJECTFILES:= $(OBJF)
 
 
@@ -40,8 +42,9 @@ OBJECTFILES:= $(OBJF)
 all: myos.iso
 
 myos.iso: myos.bin
-	cp $(BIN)/myos.bin $(ISO)/boot/
-	grub-mkrescue -o myos.iso $(ISO)
+	qemu-system-i386 -kernel ./bin/myos.bin
+#	cp $(BIN)/myos.bin $(ISO)/boot/
+#	grub-mkrescue -o myos.iso $(ISO)
 
 myos.bin: $(OBJ)
 	$(LD) -m elf_i386 $(LINKERLD) -o $(BIN)/myos.bin $(OBJECTFILES)

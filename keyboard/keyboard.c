@@ -1,18 +1,24 @@
 #include"keyboard.h"
 #include"irq.h"
 #include"io.h"
+#include "textmode.h"
+
 void keyboard_handler(struct regs *r)
 {
+
         r=0; r++;
     unsigned char scancode;
 
     scancode = inb(0x60);
     if (scancode & 0x80)
     {
+
     }
  else
     {
+        terminal_putchar(kbdus[scancode]);
     }
+
 }
 
 void keyboard_install()
