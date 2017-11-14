@@ -17,29 +17,40 @@ TIMER=$(TOPDIR)/timer
 CRT=$(SYSTEM)/crt
 MEM=$(TOPDIR)/memory
 #Compiler and Assembler
-COMPILERPREFIX=i386-rtems4.12
-CC=$(COMPILERPREFIX)-gcc
-AS=nasm
-GAS=$(COMPILERPREFIX)-as
-CPP=$(COMPILERPREFIX)-g++
-LD=$(COMPILERPREFIX)-ld
-
+COMPILERPREFIX=#i386-rtems4.12
+CC=$(COMPILERPREFIX)gcc
+AS=$(TOPDIR)/nasm-2.13.02rc2/nasm
+GAS=$(COMPILERPREFIX)as
+CPP=$(COMPILERPREFIX)g++
+LD=$(COMPILERPREFIX)ld
+DOCKCROSS=$(TOPDIR)/dockcross
 INCLUDES= -I$(DISPLAY) -I$(IO) -I$(SYSTEM) -I$(BOOT) -I$(KERNEL) -I$(GDT) -I$(IDT) -I$(ISR) -I$(IRQ) -I$(KEYBOARD) -I$(UTILITY) -I$(TIMER) -I$(MEM)
 LINKERLD=-T $(TOPDIR)/linker/linker.ld
-FLAGS= -ffreestanding -O2 -std=gnu99 -Wall -Wextra -nostdlib -fno-exceptions
+FLAGS= -m32 -ffreestanding -O2 -std=gnu99 -Wall -Wextra -nostdlib -fno-exceptions
 CPFLAGS= -ffreestanding -O2 -Wall -Wextra -nostdlib -fno-exceptions -fno-rtti
 LIBS=-lgcc
 CRTI_OBJ=$(BIN)/crti.o
 CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ=$(BIN)/crtn.o
-OBJF=$(BIN)/kernel.o $(BIN)/boot.o $(BIN)/io.o $(BIN)/textmode.o $(BIN)/vgamodes.o $(BIN)/gdtflush.o $(BIN)/idtload.o $(BIN)/idt.o $(BIN)/isrhand.o $(BIN)/isr.o $(BIN)/utility.o $(BIN)/irqcode.o $(BIN)/irq.o $(BIN)/gdt.o $(BIN)/welcome.o $(BIN)/keyboard.o $(BIN)/memmgr.o $(BIN)/pagefault.o
-OBJ=boot.o io.o textmode.o vgamodes.o gdtflush.o idtload.o idt.o isrhand.o isr.o utility.o irqcode.o irq.o kernel.o gdt.o welcome.o keyboard.o memmgr.o pagefault.o
+OBJF=$(BIN)/kernel.o $(BIN)/boot.o $(BIN)/io.o $(BIN)/textmode.o $(BIN)/vgamodes.o $(BIN)/gdtflush.o $(BIN)/idtload.o $(BIN)/idt.o $(BIN)/isrhand.o $(BIN)/isr.o $(BIN)/utility.o $(BIN)/irqcode.o $(BIN)/irq.o $(BIN)/gdt.o $(BIN)/welcome.o $(BIN)/keyboard.o
+OBJ=boot.o io.o textmode.o vgamodes.o gdtflush.o idtload.o idt.o isrhand.o isr.o utility.o irqcode.o irq.o kernel.o gdt.o welcome.o keyboard.o
 OBJECTFILES:= $(OBJF)
 
 
 
-all: myos.iso
+all: setupNasm  myos.iso
+
+setupNasm:
+	if [ -f $(AS) ];\
+	then\
+		export NASM_FOUND=1;\
+	else\
+	    cd ./nasm-2.13.02rc2;\
+		./autogen.sh;\
+		./configure;\
+		make -j8;\
+	fi;
 
 myos.iso: myos.bin
 	qemu-system-i386 -kernel ./bin/myos.bin

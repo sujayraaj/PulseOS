@@ -13,7 +13,6 @@ void idt_set_gate(unsigned char num, unsigned long base, unsigned short sel, uns
 
 }
 
-extern unsigned int page_fault(struct regs* r);
 void idt_install()
 {
 
@@ -23,7 +22,6 @@ void idt_install()
 
     memset((unsigned char*)&idt, 0, sizeidt* 256);
 	
-	idt_set_gate(14,(unsigned)page_fault,0x08,0x8E);
 	
     idt_load();
 }
