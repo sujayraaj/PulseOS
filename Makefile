@@ -53,7 +53,7 @@ setupNasm:
 	fi;
 
 myos.iso: myos.bin
-	qemu-system-i386 -kernel ./bin/myos.bin
+#	qemu-system-i386 -kernel ./bin/myos.bin
 #	cp $(BIN)/myos.bin $(ISO)/boot/
 #	grub-mkrescue -o myos.iso $(ISO)
 
