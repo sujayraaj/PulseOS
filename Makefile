@@ -1,5 +1,5 @@
 #Directories
-TOPDIR=.
+TOPDIR=src
 BIN=$(TOPDIR)/bin
 BOOT=$(TOPDIR)/boot
 IO=$(TOPDIR)/io
@@ -19,7 +19,7 @@ MEM=$(TOPDIR)/memory
 #Compiler and Assembler
 COMPILERPREFIX=#i386-rtems4.12
 CC=$(COMPILERPREFIX)gcc
-AS=$(TOPDIR)/nasm-2.13.02rc2/nasm
+AS=nasm-2.13.02rc2/nasm
 GAS=$(COMPILERPREFIX)as
 CPP=$(COMPILERPREFIX)g++
 LD=$(COMPILERPREFIX)ld
