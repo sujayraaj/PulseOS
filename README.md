@@ -1,5 +1,6 @@
 # PulseOS v0.2
 
+![PulseOs Screens](https://raw.githubusercontent.com/sujayraaj/PulseOS/master/PulseOS.png)
 #### Attempt at making an x86 operating system.
 
 A friendly neighbourhood operating system with a 32 bit kernel. 
